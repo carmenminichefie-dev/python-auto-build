@@ -12,16 +12,13 @@ jobs:
         include:
           - os: ubuntu-latest
             name: linux
-            artifact_name: P.O.A职员各项指标登记-linux
-            icon_file: "RS.png"
+            artifact_name: poa-staff-metrics-linux  # 修改：使用简单英文名称
           - os: macos-latest
             name: macos
-            artifact_name: P.O.A职员各项指标登记-macos
-            icon_file: "RS.icns"
+            artifact_name: poa-staff-metrics-macos   # 修改：使用简单英文名称
           - os: windows-latest
             name: windows
-            artifact_name: P.O.A职员各项指标登记-windows
-            icon_file: "RS.ico"
+            artifact_name: poa-staff-metrics-windows # 修改：使用简单英文名称
 
     runs-on: ${{ matrix.os }}
 
@@ -40,7 +37,7 @@ jobs:
         pip install pyinstaller
 
     - name: Verify icon files
-      shell: bash  # 关键修改：强制使用bash
+      shell: bash
       run: |
         echo "=== 检查图标文件 ==="
         ls -la || echo "当前目录文件列表"
@@ -52,11 +49,11 @@ jobs:
         ls -la "P.O.A职员各项指标登记.py" RS.ico RS.icns RS.png 2>/dev/null || echo "部分文件不存在"
 
     - name: Build with platform-specific icons
-      shell: bash  # 关键修改：强制使用bash
+      shell: bash
       run: |
         echo "正在为 ${{ matrix.os }} 构建..."
         
-        # 设置可执行文件名称
+        # 设置可执行文件名称（保持原样，这是生成的文件名）
         APP_NAME="P.O.A职员各项指标登记"
         
         # 设置Python脚本路径
@@ -80,7 +77,7 @@ jobs:
         fi
 
     - name: Verify build output
-      shell: bash  # 关键修改：强制使用bash
+      shell: bash
       run: |
         echo "=== 构建结果 ==="
         ls -la dist/
