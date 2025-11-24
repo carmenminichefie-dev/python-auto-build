@@ -40,6 +40,7 @@ jobs:
         pip install pyinstaller
 
     - name: Verify icon files
+      shell: bash  # 关键修改：强制使用bash
       run: |
         echo "=== 检查图标文件 ==="
         ls -la || echo "当前目录文件列表"
@@ -51,6 +52,7 @@ jobs:
         ls -la "P.O.A职员各项指标登记.py" RS.ico RS.icns RS.png 2>/dev/null || echo "部分文件不存在"
 
     - name: Build with platform-specific icons
+      shell: bash  # 关键修改：强制使用bash
       run: |
         echo "正在为 ${{ matrix.os }} 构建..."
         
@@ -78,6 +80,7 @@ jobs:
         fi
 
     - name: Verify build output
+      shell: bash  # 关键修改：强制使用bash
       run: |
         echo "=== 构建结果 ==="
         ls -la dist/
