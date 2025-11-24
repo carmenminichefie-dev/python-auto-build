@@ -1,4 +1,4 @@
-name: Build with Multi-Platform Icons
+name: Build P.O.A职员各项指标登记
 
 on:
   push:
@@ -12,16 +12,16 @@ jobs:
         include:
           - os: ubuntu-latest
             name: linux
-            artifact_name: myapp-linux
-            icon_file: "RS.png"  # 修改这里
+            artifact_name: P.O.A职员各项指标登记-linux
+            icon_file: "RS.png"
           - os: macos-latest
             name: macos
-            artifact_name: myapp-macos
-            icon_file: "RS.icns"  # 修改这里
+            artifact_name: P.O.A职员各项指标登记-macos
+            icon_file: "RS.icns"
           - os: windows-latest
             name: windows
-            artifact_name: myapp-windows
-            icon_file: "RS.ico"  # 修改这里
+            artifact_name: P.O.A职员各项指标登记-windows
+            icon_file: "RS.ico"
 
     runs-on: ${{ matrix.os }}
 
@@ -47,8 +47,8 @@ jobs:
         echo "=== 查找RS图标文件 ==="
         find . -name "RS.ico" -o -name "RS.icns" -o -name "RS.png" | grep -v ".git" || echo "未找到RS图标文件"
         echo ""
-        echo "=== 检查根目录RS图标 ==="
-        ls -la RS.ico RS.icns RS.png 2>/dev/null || echo "根目录无RS图标文件"
+        echo "=== 检查根目录文件 ==="
+        ls -la "P.O.A职员各项指标登记.py" RS.ico RS.icns RS.png 2>/dev/null || echo "部分文件不存在"
 
     - name: Build with platform-specific icons
       run: |
@@ -57,24 +57,24 @@ jobs:
         # 设置可执行文件名称
         APP_NAME="P.O.A职员各项指标登记"
         
-        # 设置Python脚本路径（请修改为你的实际路径）
-        SCRIPT_PATH="P.O.A职员各项指标登记.py"  # 修改这里！
+        # 设置Python脚本路径
+        SCRIPT_PATH="P.O.A职员各项指标登记.py"
         
         if [ "${{ matrix.os }}" == "windows-latest" ] && [ -f "RS.ico" ]; then
           echo "使用Windows图标构建..."
-          pyinstaller --onefile --icon=RS.ico --name=$APP_NAME "$SCRIPT_PATH"
+          pyinstaller --onefile --icon=RS.ico --name="$APP_NAME" "$SCRIPT_PATH"
           
         elif [ "${{ matrix.os }}" == "macos-latest" ] && [ -f "RS.icns" ]; then
           echo "使用macOS图标构建..."
-          pyinstaller --onefile --icon=RS.icns --name=$APP_NAME "$SCRIPT_PATH"
+          pyinstaller --onefile --icon=RS.icns --name="$APP_NAME" "$SCRIPT_PATH"
           
         elif [ "${{ matrix.os }}" == "ubuntu-latest" ] && [ -f "RS.png" ]; then
           echo "使用Linux图标构建..."
-          pyinstaller --onefile --icon=RS.png --name=$APP_NAME "$SCRIPT_PATH"
+          pyinstaller --onefile --icon=RS.png --name="$APP_NAME" "$SCRIPT_PATH"
           
         else
           echo "未找到平台专用图标，使用默认设置构建..."
-          pyinstaller --onefile --name=$APP_NAME "$SCRIPT_PATH"
+          pyinstaller --onefile --name="$APP_NAME" "$SCRIPT_PATH"
         fi
 
     - name: Verify build output
@@ -83,11 +83,11 @@ jobs:
         ls -la dist/
         echo ""
         if [ "${{ matrix.os }}" == "windows-latest" ]; then
-          echo "Windows可执行文件大小:"
-          ls -lh dist/myapp.exe
+          echo "Windows可执行文件:"
+          ls -lh "dist/P.O.A职员各项指标登记.exe"
         else
-          echo "可执行文件大小:"
-          ls -lh dist/myapp
+          echo "可执行文件:"
+          ls -lh "dist/P.O.A职员各项指标登记"
         fi
 
     - name: Upload artifacts
