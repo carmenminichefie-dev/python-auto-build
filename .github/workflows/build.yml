@@ -12,13 +12,13 @@ jobs:
         include:
           - os: ubuntu-latest
             name: linux
-            artifact_name: poa-staff-metrics-linux  # 修改：使用简单英文名称
+            artifact_name: poa-staff-metrics-linux
           - os: macos-latest
             name: macos
-            artifact_name: poa-staff-metrics-macos   # 修改：使用简单英文名称
+            artifact_name: poa-staff-metrics-macos
           - os: windows-latest
             name: windows
-            artifact_name: poa-staff-metrics-windows # 修改：使用简单英文名称
+            artifact_name: poa-staff-metrics-windows
 
     runs-on: ${{ matrix.os }}
 
@@ -36,58 +36,26 @@ jobs:
         python -m pip install --upgrade pip
         pip install pyinstaller
 
-    - name: Verify icon files
+    - name: Build executables
       shell: bash
       run: |
-        echo "=== 检查图标文件 ==="
-        ls -la || echo "当前目录文件列表"
-        echo ""
-        echo "=== 查找RS图标文件 ==="
-        find . -name "RS.ico" -o -name "RS.icns" -o -name "RS.png" | grep -v ".git" || echo "未找到RS图标文件"
-        echo ""
-        echo "=== 检查根目录文件 ==="
-        ls -la "P.O.A职员各项指标登记.py" RS.ico RS.icns RS.png 2>/dev/null || echo "部分文件不存在"
-
-    - name: Build with platform-specific icons
-      shell: bash
-      run: |
-        echo "正在为 ${{ matrix.os }} 构建..."
-        
-        # 设置可执行文件名称（保持原样，这是生成的文件名）
         APP_NAME="P.O.A职员各项指标登记"
-        
-        # 设置Python脚本路径
         SCRIPT_PATH="P.O.A职员各项指标登记.py"
         
-        if [ "${{ matrix.os }}" == "windows-latest" ] && [ -f "RS.ico" ]; then
-          echo "使用Windows图标构建..."
-          pyinstaller --onefile --icon=RS.ico --name="$APP_NAME" "$SCRIPT_PATH"
+        if [ "${{ matrix.os }}" == "windows-latest" ]; then
+          echo "构建Windows版本..."
+          pyinstaller --onefile --noconsole --icon=RS.ico --name="$APP_NAME" "$SCRIPT_PATH"
           
-        elif [ "${{ matrix.os }}" == "macos-latest" ] && [ -f "RS.icns" ]; then
-          echo "使用macOS图标构建..."
-          pyinstaller --onefile --icon=RS.icns --name="$APP_NAME" "$SCRIPT_PATH"
+        elif [ "${{ matrix.os }}" == "macos-latest" ]; then
+          echo "构建macOS应用程序..."
+          pyinstaller --windowed --name="$APP_NAME" --icon=RS.icns --osx-bundle-identifier="com.poa.staffmetrics" "$SCRIPT_PATH"
           
-        elif [ "${{ matrix.os }}" == "ubuntu-latest" ] && [ -f "RS.png" ]; then
-          echo "使用Linux图标构建..."
+        elif [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
+          echo "构建Linux版本..."
           pyinstaller --onefile --icon=RS.png --name="$APP_NAME" "$SCRIPT_PATH"
           
         else
-          echo "未找到平台专用图标，使用默认设置构建..."
           pyinstaller --onefile --name="$APP_NAME" "$SCRIPT_PATH"
-        fi
-
-    - name: Verify build output
-      shell: bash
-      run: |
-        echo "=== 构建结果 ==="
-        ls -la dist/
-        echo ""
-        if [ "${{ matrix.os }}" == "windows-latest" ]; then
-          echo "Windows可执行文件:"
-          ls -lh "dist/P.O.A职员各项指标登记.exe"
-        else
-          echo "可执行文件:"
-          ls -lh "dist/P.O.A职员各项指标登记"
         fi
 
     - name: Upload artifacts
